@@ -1,0 +1,12 @@
+plugins {
+    id 'com.metalheart.kotlin-application-conventions'
+}
+
+dependencies {
+    implementation "io.netty:netty-all:4.1.65.Final"
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'com.metalheart.server.LauncherKt'
+}
