@@ -15,7 +15,7 @@ class GameView : View() {
     init {
 
 
-        val canvas = canvas(1200.0, 800.0)
+        val canvas = canvas(800.0, 600.0)
 
         Timer().schedule(0L, 15L) {
             val p = controller.getPoint()

@@ -4,15 +4,14 @@ import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.socket.SocketChannel
-import io.netty.channel.socket.nio.NioSocketChannel
+import io.netty.channel.socket.nio.NioDatagramChannel
 import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
 import tornadofx.runAsync
 
 class Network {
 
-    private lateinit var channel : SocketChannel
+    private lateinit var channel: NioDatagramChannel
 
     fun connect() {
 
@@ -21,14 +20,12 @@ class Network {
 
             val b = Bootstrap()
             b.group(workerGroup)
-
-            b.channel(NioSocketChannel::class.java)
-
-            b.handler(object : ChannelInitializer<SocketChannel>() {
+            b.channel(NioDatagramChannel::class.java)
+            b.handler(object : ChannelInitializer<NioDatagramChannel>() {
                 @Throws(Exception::class)
-                override fun initChannel(ch: SocketChannel) {
+                override fun initChannel(ch: NioDatagramChannel) {
                     channel = ch
-                    channel.pipeline().addLast(StringDecoder(), StringEncoder())
+                    channel.pipeline().addLast(StringDecoder(), StringEncoder(), ClientHandler())
                 }
             })
 
