@@ -19,9 +19,6 @@ class MainMenuView : View() {
             borderpane {
                 left = vbox {
                     textfield(msg)
-                    button("Send ${msg.value ?: ""}").setOnAction {
-                        controller.send(msg.value ?: "none")
-                    }
                     button("Start").setOnAction {
                         replaceWith<GameView>()
                     }

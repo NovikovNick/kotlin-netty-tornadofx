@@ -16,8 +16,8 @@ class GameClient : App() {
     override fun start(stage: Stage) {
         super.start(stage)
         stage.apply {
-            width = 1800.0
-            height = 900.0
+            width = 1000.0
+            height = 700.0
             centerOnScreen()
         }
     }

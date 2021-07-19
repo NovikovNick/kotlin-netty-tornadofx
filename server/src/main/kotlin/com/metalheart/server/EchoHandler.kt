@@ -12,17 +12,21 @@ class EchoHandler : SimpleChannelInboundHandler<DatagramPacket>() {
     var clients: Set<InetSocketAddress> = HashSet()
 
     override fun channelRead0(ctx: ChannelHandlerContext?, msg: DatagramPacket?) {
-        msg?.sender()?.let {
-            clients += it
-            val input = "Received from $it: ${msg?.content()?.toString(UTF_8)}"
-            println(input)
-            val buf = Unpooled.wrappedBuffer("done".toByteArray(UTF_8));
-            ctx?.channel()?.writeAndFlush(DatagramPacket(buf, it))
+        msg?.sender()?.let { client ->
+            clients += client
 
-            clients.forEach {
+            msg?.content()?.let {
+                val sn = it.toString(UTF_8)
+                println("Received from $client: $sn")
+                val buf = Unpooled.wrappedBuffer(sn.toByteArray(UTF_8));
+                ctx?.channel()?.writeAndFlush(DatagramPacket(buf, client))
+            }
+
+
+            /*clients.forEach {
                 val buf = Unpooled.wrappedBuffer(input.toByteArray(UTF_8));
                 ctx?.channel()?.writeAndFlush(DatagramPacket(buf, it))
-            }
+            }*/
         }
     }
 
