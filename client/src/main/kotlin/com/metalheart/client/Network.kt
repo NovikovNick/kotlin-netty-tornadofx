@@ -1,6 +1,6 @@
 package com.metalheart.client
 
-import com.metalheart.client.controller.SimpleController
+import com.metalheart.client.controller.ClientController
 import com.metalheart.model.PlayerInput
 import io.netty.bootstrap.Bootstrap
 import io.netty.buffer.Unpooled
@@ -14,7 +14,7 @@ import io.netty.handler.codec.string.StringEncoder
 import java.nio.charset.StandardCharsets
 import kotlin.concurrent.thread
 
-class Network (val controller: SimpleController) {
+class Network (val controller: ClientController) {
 
     private lateinit var channel: NioDatagramChannel
 

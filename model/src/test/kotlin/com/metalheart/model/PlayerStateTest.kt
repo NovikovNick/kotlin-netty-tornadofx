@@ -1,4 +1,4 @@
-package com.metalheart.client.model
+package com.metalheart.model
 
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
@@ -10,13 +10,8 @@ class PlayerStateTest {
     @Test
     fun test() {
 
-
         val latch = CountDownLatch(2000)
-
-
         val playerState = PlayerState(5)
-
-
 
         for (i in 1..1000) {
             thread {

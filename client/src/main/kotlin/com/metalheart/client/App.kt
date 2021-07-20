@@ -3,14 +3,14 @@
  */
 package com.metalheart.client
 
-import com.metalheart.client.view.MainMenuView
+import com.metalheart.client.view.MenuView
 import javafx.application.Application
 import javafx.stage.Stage
 import tornadofx.App
 import tornadofx.importStylesheet
 
 class GameClient : App() {
-    override val primaryView = MainMenuView::class
+    override val primaryView = MenuView::class
 
 
     override fun start(stage: Stage) {
@@ -25,7 +25,6 @@ class GameClient : App() {
     init {
         importStylesheet(Styles::class)
     }
-
 }
 
 fun main(args: Array<String>) {

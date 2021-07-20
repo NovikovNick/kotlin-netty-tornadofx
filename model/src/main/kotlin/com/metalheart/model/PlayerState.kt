@@ -1,6 +1,5 @@
-package com.metalheart.client.model
+package com.metalheart.model
 
-import com.metalheart.model.PlayerInput
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock

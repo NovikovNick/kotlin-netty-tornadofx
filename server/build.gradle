@@ -1,8 +1,16 @@
 plugins {
     id 'com.metalheart.kotlin-application-conventions'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+javafx {
+    version = "11.0.2"
+    modules = ['javafx.controls', 'javafx.graphics']
 }
 
 dependencies {
+    implementation project(":model")
+    implementation 'no.tornado:tornadofx:1.7.20'
     implementation "io.netty:netty-all:4.1.65.Final"
 }
 

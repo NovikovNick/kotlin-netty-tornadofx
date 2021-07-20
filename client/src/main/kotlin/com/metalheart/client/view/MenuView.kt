@@ -1,15 +1,15 @@
 package com.metalheart.client.view
 
-import com.metalheart.client.controller.SimpleController
+import com.metalheart.client.controller.ClientController
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.HBox
 import tornadofx.*
 
-class MainMenuView : View() {
+class MenuView : View() {
     override val root = HBox()
 
     private val msg = SimpleStringProperty()
-    private val controller: SimpleController by inject()
+    private val controller: ClientController by inject()
 
     init {
 
