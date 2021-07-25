@@ -1,8 +1,9 @@
 package com.metalheart.client.controller
 
 import com.metalheart.client.Network
+import com.metalheart.model.ClientInputData
 import com.metalheart.model.PlayerInput
-import com.metalheart.model.PlayerState
+import com.metalheart.model.PlayerInputBuffer
 import tornadofx.Controller
 import java.time.Instant
 import java.util.*
@@ -13,19 +14,18 @@ class ClientController : Controller() {
     private lateinit var network: Network
     private lateinit var syncTask: TimerTask
 
-    private val playerState = PlayerState(60)
-    var sn: Long = 0
+    private val playerState = PlayerInputBuffer(60)
 
     fun connect() {
         network = Network(this)
         network.connect()
     }
 
-    fun receive(snapshot: Long) {
-        playerState.confirm(snapshot)
+    fun receive(snapshot: Set<Long>) {
+        playerState.confirm(snapshot, Instant.now().toEpochMilli())
     }
 
-    fun getState(): PlayerState {
+    fun getState(): PlayerInputBuffer {
         return playerState
     }
 
@@ -38,8 +38,12 @@ class ClientController : Controller() {
     }
 
     fun sync() {
-        val input = PlayerInput(sn++, Instant.now(), null)
-        playerState.add(input.sn)
+        playerState.add(PlayerInput(Instant.now().toEpochMilli()))
+
+        val input = ClientInputData(
+                playerState.getConfirmedInputs().map { it.frame }.toSet(),
+                playerState.getNotDeliveredInputs())
+
         network.send(input)
     }
 }

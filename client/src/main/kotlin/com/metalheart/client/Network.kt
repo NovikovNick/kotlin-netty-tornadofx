@@ -1,7 +1,7 @@
 package com.metalheart.client
 
 import com.metalheart.client.controller.ClientController
-import com.metalheart.model.PlayerInput
+import com.metalheart.model.ClientInputData
 import io.netty.bootstrap.Bootstrap
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelInitializer
@@ -11,7 +11,6 @@ import io.netty.channel.socket.DatagramPacket
 import io.netty.channel.socket.nio.NioDatagramChannel
 import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
-import java.nio.charset.StandardCharsets
 import kotlin.concurrent.thread
 
 class Network (val controller: ClientController) {
@@ -38,9 +37,9 @@ class Network (val controller: ClientController) {
         }
     }
 
-    fun send(input: PlayerInput) {
+    fun send(input: ClientInputData) {
         if (this::channel.isInitialized) {
-            val buf = Unpooled.wrappedBuffer(input.sn.toString().toByteArray(StandardCharsets.UTF_8));
+            val buf = Unpooled.wrappedBuffer(input.toByteArray());
             val packet = DatagramPacket(buf, channel.remoteAddress())
             channel.writeAndFlush(packet)
         }

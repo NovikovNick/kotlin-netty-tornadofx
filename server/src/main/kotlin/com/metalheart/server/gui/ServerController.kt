@@ -1,6 +1,9 @@
 package com.metalheart.server.gui
 
-import com.metalheart.server.EchoHandler
+import com.metalheart.model.ClientInputData
+import com.metalheart.model.PlayerInput
+import com.metalheart.model.ServerGameState
+import com.metalheart.server.ServerHandler
 import io.netty.bootstrap.Bootstrap
 import io.netty.buffer.Unpooled
 import io.netty.channel.*
@@ -17,10 +20,15 @@ import kotlin.concurrent.withLock
 
 class ServerController : Controller() {
 
-    private var inputs: Map<InetSocketAddress, ArrayList<Long>> = HashMap()
     private var lock = ReentrantLock()
     private lateinit var channel: Channel
     private lateinit var syncTask: TimerTask
+    private var sn: Long = 0;
+
+    private var clientIdSequence = 0L
+    private val serverState = ServerGameState()
+    private var clients: Map<InetSocketAddress, Long> = HashMap()
+
 
     fun bind(port: Int) {
         thread {
@@ -32,7 +40,7 @@ class ServerController : Controller() {
                         .handler(object : ChannelInitializer<NioDatagramChannel>() {
                             @Throws(Exception::class)
                             override fun initChannel(ch: NioDatagramChannel) {
-                                ch.pipeline().addLast(EchoHandler(this@ServerController))
+                                ch.pipeline().addLast(ServerHandler(this@ServerController))
                             }
                         })
                         .option(ChannelOption.SO_BROADCAST, true)
@@ -48,12 +56,15 @@ class ServerController : Controller() {
         }
     }
 
-    fun saveInput(sender: InetSocketAddress, input: Long) {
+    fun saveInput(sender: InetSocketAddress, inputs: ClientInputData) {
         lock.withLock {
-            if (!inputs.containsKey(sender)) {
-                inputs += sender.to(ArrayList())
+            if (!clients.containsKey(sender)) {
+                clients += sender.to(clientIdSequence++)
             }
-            inputs[sender]?.add(input)
+
+            clients[sender]?.let {
+                serverState.add(it, inputs.input)
+            }
         }
     }
 
@@ -67,17 +78,17 @@ class ServerController : Controller() {
 
     fun sync() {
         if (this::channel.isInitialized) {
-            inputs.forEach { client, input ->
+
+            sn++
+            clients.forEach { address, clientId ->
                 thread {
 
                     // TimeUnit.MILLISECONDS.sleep(Random().nextInt(500) + 100L)
-                    input.forEach {
 
-                        println("sent to $client: $it")
-                        val buf = Unpooled.wrappedBuffer(it.toString().toByteArray())
-                        channel.writeAndFlush(DatagramPacket(buf, client))
-                    }
-                    inputs += client.to(ArrayList())
+                    val projection = serverState.getProjection(clientId)
+                    println("sent to $address: $projection")
+                    val buf = Unpooled.wrappedBuffer(projection.toByteArray())
+                    channel.writeAndFlush(DatagramPacket(buf, address))
                 }
             }
         }

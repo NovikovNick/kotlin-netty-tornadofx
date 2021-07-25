@@ -2,14 +2,11 @@ package com.metalheart.client.view
 
 import com.metalheart.client.controller.ClientController
 import com.metalheart.client.ext.clear
-import com.metalheart.client.ext.draw
 import com.metalheart.client.ext.drawPing
-import com.metalheart.model.Point
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
-import java.time.Duration
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -98,16 +95,16 @@ class GameView : View() {
             font = Font.font(10.0)
 
             var i = 0
-            var ping = -1
+            var ping = -1L
             controller.getState().forEach {
                 i++
 
                 fill = Color.WHITE
                 var text = "${it.sn}"
 
-                if (it.ack()) {
+                it.confirmedAt?.let { confirmedAt ->
                     fill = Color.GREEN
-                    Duration.between(it.sentAt, it.ackAt).toMillis().toInt()
+                    (confirmedAt - it.sn)
                             .takeIf { it > ping }
                             ?.let { ping = it }
 
@@ -117,7 +114,7 @@ class GameView : View() {
                 fillText(text, 10.0, i * size + 48.0)
                 fillRect(0.0, i * size + 40.0, size, size)
             }
-            canvas.drawPing(ping / 2)
+            canvas.drawPing((ping / 2).toInt())
         }
     }
 }

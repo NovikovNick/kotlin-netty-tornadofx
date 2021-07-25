@@ -1,13 +1,11 @@
 package com.metalheart.model
 
-import java.time.Instant
+import kotlinx.serialization.Serializable
 
-data class PlayerInput(
-        val sn: Long,
-        val sentAt: Instant,
-        val ackAt: Instant?) {
-
-    fun ack() : Boolean {
-        return ackAt != null
-    }
-}
+@Serializable
+data class PlayerInput(val frame: Long,
+                       val m1Pressed: Boolean = false,
+                       val wPressed: Boolean = false,
+                       val aPressed: Boolean = false,
+                       val sPressed: Boolean = false,
+                       val dPressed: Boolean = false)
