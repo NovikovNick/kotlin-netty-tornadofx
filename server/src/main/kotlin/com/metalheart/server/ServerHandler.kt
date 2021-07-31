@@ -1,6 +1,7 @@
 package com.metalheart.server
 
-import com.metalheart.model.ClientInputData
+import com.metalheart.model.dto.ClientInput
+import com.metalheart.model.dto.ClientInputConfirmation
 import com.metalheart.server.gui.ServerController
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -13,9 +14,16 @@ class ServerHandler(val controller: ServerController) : SimpleChannelInboundHand
     override fun channelRead0(ctx: ChannelHandlerContext?, msg: DatagramPacket?) {
         msg?.sender()?.let { client ->
             msg?.content()?.let {
-                println("received from $client: ${it.toString(UTF_8)}")
-                val snapshot = ClientInputData.fromString(it.toString(UTF_8))
-                controller.saveInput(client, snapshot)
+                val str = it.toString(UTF_8)
+                println("received: $str")
+                when {
+                    str.contains(ClientInput.javaClass.typeName) -> {
+                        controller.receive(client, ClientInput.fromString(str))
+                    }
+                    str.contains(ClientInputConfirmation.javaClass.typeName) -> {
+                        controller.receive(client, ClientInputConfirmation.fromString(str))
+                    }
+                }
             }
         }
     }

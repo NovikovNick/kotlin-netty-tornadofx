@@ -1,9 +1,10 @@
 package com.metalheart.client.controller
 
 import com.metalheart.client.Network
-import com.metalheart.model.ClientInputData
 import com.metalheart.model.PlayerInput
-import com.metalheart.model.PlayerInputBuffer
+import com.metalheart.model.dto.ClientInput
+import com.metalheart.model.dto.ClientInputConfirmation
+import com.metalheart.model.state.ClientGameState
 import tornadofx.Controller
 import java.time.Instant
 import java.util.*
@@ -14,19 +15,23 @@ class ClientController : Controller() {
     private lateinit var network: Network
     private lateinit var syncTask: TimerTask
 
-    private val playerState = PlayerInputBuffer(60)
+    private val clientState = ClientGameState(Random().nextLong())
 
     fun connect() {
         network = Network(this)
         network.connect()
     }
 
-    fun receive(snapshot: Set<Long>) {
-        playerState.confirm(snapshot, Instant.now().toEpochMilli())
+    fun receive(input: ClientInput) {
+        clientState.update(input)
     }
 
-    fun getState(): PlayerInputBuffer {
-        return playerState
+    fun receive(input: ClientInputConfirmation) {
+        clientState.update(input, Instant.now().toEpochMilli())
+    }
+
+    fun getState(): Map<Long, List<PlayerInput>> {
+        return clientState.getInputs()
     }
 
     fun stopSync() {
@@ -38,12 +43,11 @@ class ClientController : Controller() {
     }
 
     fun sync() {
-        playerState.add(PlayerInput(Instant.now().toEpochMilli()))
 
-        val input = ClientInputData(
-                playerState.getConfirmedInputs().map { it.frame }.toSet(),
-                playerState.getNotDeliveredInputs())
+        clientState.add(PlayerInput(Instant.now().toEpochMilli()))
 
+        val (input, confirm) = clientState.get()
         network.send(input)
+        confirm.forEach { network.send(it) }
     }
 }

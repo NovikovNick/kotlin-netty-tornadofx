@@ -94,25 +94,32 @@ class GameView : View() {
 
             font = Font.font(10.0)
 
-            var i = 0
+            var x = 0
+            var y = 0
             var ping = -1L
-            controller.getState().forEach {
-                i++
+            controller.getState().forEach { (clientId, inputs) ->
 
-                fill = Color.WHITE
-                var text = "${it.sn}"
 
-                it.confirmedAt?.let { confirmedAt ->
-                    fill = Color.GREEN
-                    (confirmedAt - it.sn)
-                            .takeIf { it > ping }
-                            ?.let { ping = it }
+                inputs.forEach { input ->
 
-                    text = "${it.sn}"
+                    fill = Color.WHITE
+                    var text = "${input.frame}"
+
+                    /*it.confirmedAt?.let { confirmedAt ->
+                        fill = Color.GREEN
+                        (confirmedAt - it.sn)
+                                .takeIf { it > ping }
+                                ?.let { ping = it }
+
+                        text = "${it.sn}"
+                    }*/
+
+                    val size = 9.0
+                    fillText(text, x * 50.0, y * size)
+                    fillRect(x * 50.0, y * size, size, size)
+                    y++
                 }
-                val size = 9.0
-                fillText(text, 10.0, i * size + 48.0)
-                fillRect(0.0, i * size + 40.0, size, size)
+                x++
             }
             canvas.drawPing((ping / 2).toInt())
         }
