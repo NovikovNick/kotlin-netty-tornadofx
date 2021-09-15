@@ -6,6 +6,7 @@ import kotlin.concurrent.withLock
 class PlayerInputBuffer(private val capacity: Short) {
 
     private var inputs: Set<PlayerInputWrapper> = HashSet()
+    private var confirmed = java.util.HashSet<Long>()
 
     private val lock: ReentrantLock = ReentrantLock()
 
@@ -26,11 +27,12 @@ class PlayerInputBuffer(private val capacity: Short) {
                 .toList()
     }
 
-    fun getConfirmedInputs(): List<PlayerInput> {
-        return inputs
-                .filter { it.confirmedAt != null }
-                .map { it.input }
-                .toList()
+    fun getConfirmedInputs(): Set<Long> {
+        lock.withLock {
+            val res = confirmed.toSet()
+            confirmed.clear()
+            return res
+        }
     }
 
     fun getAllInputs(): List<PlayerInput> {
@@ -42,7 +44,10 @@ class PlayerInputBuffer(private val capacity: Short) {
         lock.withLock {
             inputs = inputs
                     .map {
-                        if (ack.contains(it.sn)) PlayerInputWrapper(it.input, it.sn, timestamp)
+                        if (ack.contains(it.sn)){
+                            confirmed.add(it.sn)
+                            PlayerInputWrapper(it.input, it.sn, timestamp)
+                        }
                         else it
                     }
                     .toSet()

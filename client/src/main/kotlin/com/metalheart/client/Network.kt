@@ -1,7 +1,6 @@
 package com.metalheart.client
 
 import com.metalheart.client.controller.ClientController
-import com.metalheart.model.ClientInputData
 import com.metalheart.model.dto.DTO
 import io.netty.bootstrap.Bootstrap
 import io.netty.buffer.Unpooled

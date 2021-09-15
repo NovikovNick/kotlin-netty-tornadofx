@@ -1,7 +1,7 @@
 package com.metalheart.client
 
 import com.metalheart.client.controller.ClientController
-import com.metalheart.model.dto.ClientInput
+import com.metalheart.model.dto.InputDTO
 import com.metalheart.model.dto.ClientInputConfirmation
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -15,8 +15,8 @@ class ClientHandler(val controller: ClientController) : SimpleChannelInboundHand
             val str = it.toString(UTF_8)
             println("received from server: $str")
             when {
-                str.contains(ClientInput.javaClass.typeName) -> {
-                    controller.receive(ClientInput.fromString(str))
+                str.contains(InputDTO.javaClass.typeName) -> {
+                    controller.receive(InputDTO.fromString(str))
                 }
                 str.contains(ClientInputConfirmation.javaClass.typeName) -> {
                     controller.receive(ClientInputConfirmation.fromString(str))

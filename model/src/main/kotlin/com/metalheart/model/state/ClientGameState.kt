@@ -1,20 +1,15 @@
 package com.metalheart.model.state
 
-import com.metalheart.model.PlayerInput
-import com.metalheart.model.PlayerInputBuffer
-import com.metalheart.model.dto.ClientInput
-import com.metalheart.model.dto.ClientInputConfirmation
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
-
-class ClientGameState(val clientId: Long) : ClientInputView{
-    private var serverFrameTimeStamp: Long = 0L
+class ClientGameState(val clientId: Long) /*: ClientInputView*/{
+    /*private var serverFrameTimeStamp: Long = 0L
     private val selfInputs = PlayerInputBuffer(60)
     private var otherPlayerInputs = HashMap<Long, PlayerInputBuffer>().toMutableMap()
     private var lock = ReentrantLock()
 
-    fun get(): Pair<ClientInput, Set<ClientInputConfirmation>> {
+    fun get(): Pair<Input, Set<ClientInputConfirmation>> {
         lock.withLock {
+
+            // todo: how to use ClientInputConfirmation???
 
             val input = selfInputs.getNotDeliveredInputs()
 
@@ -23,7 +18,7 @@ class ClientGameState(val clientId: Long) : ClientInputView{
                     .map { ClientInputConfirmation(it.key, it.value) }
                     .toSet()
 
-            return ClientInput(clientId, serverFrameTimeStamp, input.toSet()) to otherClientConfirmation
+            return Input(clientId, serverFrameTimeStamp, input.toSet()) to otherClientConfirmation
         }
     }
 
@@ -33,7 +28,7 @@ class ClientGameState(val clientId: Long) : ClientInputView{
         }
     }
 
-    fun update(input: ClientInput) {
+    fun update(input: Input) {
         lock.withLock {
 
             serverFrameTimeStamp = if (serverFrameTimeStamp > input.sn) serverFrameTimeStamp else input.sn
@@ -55,5 +50,5 @@ class ClientGameState(val clientId: Long) : ClientInputView{
         val res = HashMap(otherPlayerInputs.mapValues { it.value.getAllInputs() })
         res += (clientId to selfInputs.getAllInputs())
         return res
-    }
+    }*/
 }

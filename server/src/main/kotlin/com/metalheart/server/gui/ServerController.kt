@@ -1,6 +1,6 @@
 package com.metalheart.server.gui
 
-import com.metalheart.model.dto.ClientInput
+import com.metalheart.model.dto.InputDTO
 import com.metalheart.model.dto.ClientInputConfirmation
 import com.metalheart.model.state.ServerGameState
 import com.metalheart.server.ServerHandler
@@ -55,7 +55,7 @@ class ServerController : Controller() {
         }
     }
 
-    fun receive(sender: InetSocketAddress, input: ClientInput) {
+    fun receive(sender: InetSocketAddress, input: InputDTO) {
         lock.withLock {
             if (!clients.containsKey(sender)) {
                 clients += sender.to(input.clientId)

@@ -2,7 +2,7 @@ package com.metalheart.client.controller
 
 import com.metalheart.client.Network
 import com.metalheart.model.PlayerInput
-import com.metalheart.model.dto.ClientInput
+import com.metalheart.model.dto.InputDTO
 import com.metalheart.model.dto.ClientInputConfirmation
 import com.metalheart.model.state.ClientGameState
 import tornadofx.Controller
@@ -22,7 +22,7 @@ class ClientController : Controller() {
         network.connect()
     }
 
-    fun receive(input: ClientInput) {
+    fun receive(input: InputDTO) {
         clientState.update(input)
     }
 

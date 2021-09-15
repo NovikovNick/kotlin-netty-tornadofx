@@ -1,19 +1,12 @@
 package com.metalheart.model.state
 
-import com.metalheart.model.ClientInputProjection
-import com.metalheart.model.PlayerInputBuffer
-import com.metalheart.model.dto.ClientInput
-import com.metalheart.model.dto.ClientInputConfirmation
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
-
 class ServerGameState {
-    private var clientIdToClientFrameTimeStamp = HashMap<Long, Long>().toMutableMap()
+    /*private var clientIdToClientFrameTimeStamp = HashMap<Long, Long>().toMutableMap()
     private var clientIdToInput = HashMap<Long, PlayerInputBuffer>().toMutableMap()
     private var clientIdToProjection = HashMap<Long, ClientInputProjection>().toMutableMap()
     private var lock = ReentrantLock()
 
-    fun get(clientId: Long, frameTimeStamp: Long): Pair<ClientInputConfirmation, Set<ClientInput>> {
+    fun get(clientId: Long, frameTimeStamp: Long): Pair<ClientInputConfirmation, Set<InputDTO>> {
         lock.withLock {
             val confirmed = clientIdToInput[clientId]
                     ?.getNotDeliveredInputs()
@@ -22,10 +15,10 @@ class ServerGameState {
                     ?: emptySet()
 
             initProjection(clientId)
-            val inputs: Set<ClientInput> = clientIdToProjection[clientId]
+            val inputs: Set<InputDTO> = clientIdToProjection[clientId]
                     ?.inputs
                     ?.mapValues { it.value.getNotDeliveredInputs().toSet() }
-                    ?.map { ClientInput(it.key, clientIdToClientFrameTimeStamp[clientId] ?: 0, it.value) }
+                    ?.map { InputDTO(it.key, clientIdToClientFrameTimeStamp[clientId] ?: 0, it.value) }
                     ?.toSet()
                     ?: emptySet()
 
@@ -33,7 +26,7 @@ class ServerGameState {
         }
     }
 
-    fun update(input: ClientInput) {
+    fun update(input: InputDTO) {
         lock.withLock {
 
             val clientId = input.clientId
@@ -72,5 +65,5 @@ class ServerGameState {
 
     private fun initProjection(clientId: Long) {
         clientIdToProjection.putIfAbsent(clientId, ClientInputProjection(HashMap(clientIdToInput.filterKeys { it != clientId })))
-    }
+    }*/
 }
